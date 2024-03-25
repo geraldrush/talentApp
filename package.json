@@ -1,0 +1,17 @@
+{
+  "name": "talentapp",
+  "version": "1.0.0",
+  "description": "ecommerce app",
+  "main": "index.js",
+  "scripts": {
+    "dev": "node index.js"
+  },
+  "keywords": [
+    "app"
+  ],
+  "author": "Gerald Rushwaya",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.19.1"
+  }
+}
