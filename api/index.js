@@ -9,5 +9,3 @@ app.get("/", (req, res) => {
 app.listen(port, () => {
   console.log(`Sever running on http://localhost:${port}`);
 });
-
-module.exports = app;
