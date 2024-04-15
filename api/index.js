@@ -10,10 +10,14 @@ app.use(bodyParser.json());
 app.get("/", (req, res) => {
   const baseUrl = req.protocol + "://" + req.get("host");
   res.send(
-    "Welcome to the home page" +
+    "<h1>This the home page and contents page</h1> <p>Welcome to the home page " +
       baseUrl +
       "\n" +
-      `Orders route is on  ${baseUrl}/orders`
+      "<p>Orders route is on " +
+      baseUrl +
+      "/orders</p>" + "<p>Categories route is "+ baseUrl +
+      "/categories</p>" +  "<p>Menu route is "+ baseUrl +
+      "/menu</p>"
   );
 });
 
@@ -42,19 +46,19 @@ app.get("/menu", (req, res) => {
   let menu = [
     {
       id: "10",
-      name: "Chaw Burger",
+      drinkName: "Chaw Burger",
       image: "burger.png",
       categoryId: 1,
     },
     {
       id: "12",
-      name: "Rockshandy",
+      drinkName: "Rockshandy",
       image: "pizza.png",
       categoryId: 3,
     },
     {
       id: "13",
-      name: "Drinks",
+      drinkName: "Drinks",
       image: "drink.png",
       categoryId: 3,
     },
@@ -62,13 +66,11 @@ app.get("/menu", (req, res) => {
   res.send(menu);
 });
 
-const orderId = uuidv4();
 let orders = [
   {
-    name: "Charles Smith",
+    orderName: "Charles Smith",
     items: ["burger", "drinks"],
-    isTakeAway: true,
-    id: "2c866df7-8222-4d2c-931f-1286393e4544",
+    isDelivery: true
   },
 ];
 
@@ -79,15 +81,54 @@ app.get("/orders", (req, res) => {
 app.post("/orders", (req, res) => {
   const order = req.body;
 
-  orders.push({ ...order, id: orderId });
+  orders.push({ ...order, id: uuidv4() });
 
-  res.status(201).send(`Order with ${orderId} successfully created.`);
+  res.status(201).send(`Order with order number ${order.id} successfully created.`);
 });
 
 app.get("/orders", (req, res) => {
   let orders = [];
   res.send(orders);
 });
+
+app.get("/orders/:id", (req, res) => {
+  const { id } = req.params;
+
+  const foundOrder = orders.find((order)=> order.id === id);
+  
+  res.send(foundOrder);
+});
+
+app.delete('/orders/:id', (req, res) => {
+  const { id } = req.params;
+
+  orders = orders.filter((order) => order.id !== id);
+
+  res.send(`Order with id ${id} deleted from the database`);
+
+})
+
+app.patch('/orders/:order', (req, res) => {
+  const { id } = req.params;
+  const { orderName, items, isDelivery} = req.body;
+  const order = orders.find((order) => order.id === id);
+  
+
+if(orderName) {
+  order.orderName = orderName;
+}
+
+if(items) {
+  order.items = items;
+}
+
+if(isDelivery) {
+  order.isDelivery = isDelivery;
+}
+
+res.send(`User with the id ${id} has been updated`);
+
+})
 
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
