@@ -1,5 +1,7 @@
 import express from "express";
 import bodyParser from "body-parser";
+import usersRoutes from './routes/users.js';
+
 const app = express();
 const port = 5000;
 import { v4 as uuidv4 } from "uuid";
@@ -7,6 +9,7 @@ import { v4 as uuidv4 } from "uuid";
 // Use bodyParser middleware to parse JSON bodies
 app.use(bodyParser.json());
 
+app.use('/users', usersRoutes);
 app.get("/", (req, res) => {
   const baseUrl = req.protocol + "://" + req.get("host");
   res.send(
