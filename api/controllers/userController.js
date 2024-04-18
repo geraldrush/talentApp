@@ -1,4 +1,5 @@
 import { v4 as uuidv4 } from "uuid";
+import { pool } from "../utils/postgres.js";
 let users = [];
 
 export const createUser = (req, res) => {
@@ -10,7 +11,14 @@ export const createUser = (req, res) => {
 };
 
 export const getUsers = (req, res) => {
-  res.send(users);
+  pool.query('SELECT * FROM "User"', (error, results) => {
+    if (error) {
+      console.error("Error fetching users:", error);
+      res.status(500).json({ error: "Internal Server Error" });
+    } else {
+      res.status(200).json(results.rows);
+    }
+  });
 };
 
 export const getUser = (req, res) => {
