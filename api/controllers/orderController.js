@@ -1,4 +1,4 @@
-import { PrismaClient, OrderStatus } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
@@ -7,14 +7,10 @@ export const createOrder = async (req, res) => {
   const {
     orderNumber,
     cart,
-    deliveryTime,
     userName,
     userEmail,
     userPhone,
-    paymentToken,
     deliveryAddress,
-    note,
-    discount,
     total,
   } = req.body;
   try {
@@ -22,24 +18,16 @@ export const createOrder = async (req, res) => {
       data: {
         orderNumber,
         cart,
-        deliveryTime,
         userName,
         userEmail,
         userPhone,
-        paymentToken,
         deliveryAddress,
-        note,
-        discount,
         total,
-        user: {
-          connect: {
-            email: userEmail,
-          },
-        },
       },
     });
     res.status(201).json(order);
   } catch (error) {
+    console.error(error);
     res.status(500).json({ error: "Something went wrong" });
   }
 };
@@ -50,6 +38,7 @@ export const getOrders = async (req, res) => {
     const orders = await prisma.order.findMany();
     res.json(orders);
   } catch (error) {
+    console.error(error);
     res.status(500).json({ error: "Something went wrong" });
   }
 };
@@ -69,6 +58,7 @@ export const getOrder = async (req, res) => {
       res.status(404).json({ error: "Order not found" });
     }
   } catch (error) {
+    console.error(error);
     res.status(500).json({ error: "Something went wrong" });
   }
 };
@@ -76,40 +66,25 @@ export const getOrder = async (req, res) => {
 // Update an order
 export const updateOrder = async (req, res) => {
   const { id } = req.params;
-  const {
-    orderNumber,
-    cart,
-    deliveryTime,
-    userName,
-    userEmail,
-    userPhone,
-    paymentToken,
-    deliveryAddress,
-    note,
-    discount,
-    total,
-  } = req.body;
+  const { status } = req.body;
+
+  // Check if the provided status is valid
+  if (!["PREPARING", "UNASSIGNED", "COLLECTED", "DELIVERED"].includes(status)) {
+    return res.status(400).json({ error: "Invalid status" });
+  }
+
   try {
     const order = await prisma.order.update({
       where: {
         id,
       },
       data: {
-        orderNumber,
-        cart,
-        deliveryTime,
-        userName,
-        userEmail,
-        userPhone,
-        paymentToken,
-        deliveryAddress,
-        note,
-        discount,
-        total,
+        status,
       },
     });
     res.json(order);
   } catch (error) {
+    console.error(error);
     res.status(500).json({ error: "Something went wrong" });
   }
 };
@@ -125,6 +100,7 @@ export const deleteOrder = async (req, res) => {
     });
     res.json(order);
   } catch (error) {
+    console.error(error);
     res.status(500).json({ error: "Something went wrong" });
   }
 };
