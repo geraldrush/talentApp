@@ -1,4 +1,5 @@
 import express from "express";
+import session from "express-session";
 import bodyParser from "body-parser";
 import usersRoutes from "./routes/users.js";
 import menuRoutes from "./routes/menu.js";
@@ -7,6 +8,7 @@ import favoriteRoutes from "./routes/favorite.js";
 import notificationRoutes from "./routes/notification.js";
 import orderRoutes from "./routes/order.js";
 import restaurantRoutes from "./routes/restaurant.js";
+import redisStore from "./utils/redis.js";
 
 const app = express();
 const port = 5000;
@@ -21,22 +23,18 @@ app.use("/notifications", notificationRoutes);
 app.use("/orders", orderRoutes);
 app.use("/restaurants", restaurantRoutes);
 
+// Initialize session storage.
+app.use(
+  session({
+    store: redisStore,
+    resave: false, // required: force lightweight session keep alive (touch)
+    saveUninitialized: false, // recommended: only save session when data exists
+    secret: "keyboard cat",
+  })
+);
+
 app.get("/", (req, res) => {
-  const baseUrl = req.protocol + "://" + req.get("host");
-  res.send(
-    "<h1>This the home page and contents page</h1> <p>Welcome to the home page " +
-      baseUrl +
-      "\n" +
-      "<p>Orders route is on " +
-      baseUrl +
-      "/orders</p>" +
-      "<p>Categories route is " +
-      baseUrl +
-      "/categories</p>" +
-      "<p>Menu route is " +
-      baseUrl +
-      "/menu</p>"
-  );
+  res.send("<><><> API is running <><><>");
 });
 
 app.listen(port, () => {
