@@ -1,6 +1,6 @@
 import express from "express";
 //import session from "express-session";
-import passport from "passport";
+import passport from "../utils/passport.js";
 
 const router = express.Router();
 
