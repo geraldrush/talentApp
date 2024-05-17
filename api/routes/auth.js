@@ -29,7 +29,7 @@ router.get(
 router.get("/session", (req, res) => {
   try {
     if (req.user) {
-      const { id, name, email, image, role } = req.user; // Do not send the id in a production app , this is used for learning purposes
+      //const { id, name, email, image, role } = req.user; // Do not send the id in a production app , this is used for learning purposes
       const user = { id, name, email, image, role };
       res.send(user);
     } else {
