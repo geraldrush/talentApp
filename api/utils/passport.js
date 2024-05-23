@@ -1,10 +1,10 @@
 import passport from "passport";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
-//import prisma from "prisma.js";
+import prisma from "./prisma.js";
 
 //extracting email from google authentication
 const extractEmail = (profile) => {
-  if (profile.emails && profiles.emails.length > 0) {
+  if (profile.emails && profile.emails.length > 0) {
     return profile.emails[0].value;
   } else {
     return null;
@@ -57,6 +57,10 @@ passport.use(
     }
   )
 );
+
+passport.serializeUser((user, done) => {
+  done(null, user.id);
+});
 
 passport.deserializeUser(async (id, done) => {
   try {

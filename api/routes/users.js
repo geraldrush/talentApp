@@ -6,7 +6,7 @@ import {
   deleteUser,
   updateUser,
 } from "../controllers/userController.js";
-import {isAdmin} from "../utils/isAuth.js";
+import { isAdmin } from "../utils/isAuth.js";
 
 const router = express.Router();
 

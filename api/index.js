@@ -22,6 +22,7 @@ app.use(bodyParser.json());
 // Initialize session storage.
 app.use(
   session({
+    name: "talantapp",
     store: redisStore,
     resave: false,
     saveUninitialized: false,
